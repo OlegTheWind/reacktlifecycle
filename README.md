@@ -1,2 +1,2 @@
-https://reacktlifecycle-olegthewind-toni96starkgmailcoms-projects.vercel.app/
-когда оцениваешь фильм не сразу попадает на вкладку оцененных, там спустя 2-3 оценки попадает. если это критично то подскажи как 
+https://reacktlifecycle-5lpa375vk-toni96starkgmailcoms-projects.vercel.app/
+запросы не перенес потому что много дербанить, очень сильно нахеровертил, так же не смог перенести нормально поиск то ту то там траблы были. не пинай сильно пожуиста)
