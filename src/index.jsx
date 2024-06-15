@@ -36,11 +36,15 @@ function App() {
 
     const fetchMovies = async (page = 1, query = '', isRated = false) => {
         setIsLoading(true)
-        const url = isRated
-            ? `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
-            : query
-              ? `https://api.themoviedb.org/3/search/movie?query=${query}?&include_adult=false&language=en-US&page=${page}&api_key=6815b8c9798e37baf41eceff7a08b590`
-              : `https://api.themoviedb.org/3/discover/movie?api_key=6815b8c9798e37baf41eceff7a08b590&page=${page}`
+        let url
+
+        if (isRated) {
+            url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
+        } else if (query) {
+            url = `https://api.themoviedb.org/3/search/movie?query=${query}?&include_adult=false&language=en-US&page=${page}&api_key=6815b8c9798e37baf41eceff7a08b590`
+        } else {
+            url = `https://api.themoviedb.org/3/discover/movie?api_key=6815b8c9798e37baf41eceff7a08b590&page=${page}`
+        }
 
         try {
             const response = await fetch(url, options)
@@ -233,7 +237,7 @@ function App() {
                                             GenresContext={GenresContext}
                                             isLoading={isLoading}
                                             onRate={rateMovie}
-                                            isRated={true}
+                                            isRated
                                         />
                                         <Pagination
                                             current={ratedCurrentPage}

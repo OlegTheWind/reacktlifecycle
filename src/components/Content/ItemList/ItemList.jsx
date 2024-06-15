@@ -24,9 +24,9 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
         return setIsLoading(false)
     }
 
-    function handleRateChange(value) {
-        onRate(item.id, value)
-        setRating(value)
+    const handleRateChange = (valueRait) => {
+        onRate(item.id, valueRait)
+        setRating(valueRait)
     }
 
     function handleImageError() {
@@ -104,9 +104,9 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                     </div>
                     <div className="item_date">{formattedDate}</div>
                     <div className="item_genres">
-                        {movieGenres.split(', ').map((genre, index) => (
+                        {movieGenres.split(', ').map((genre) => (
                             <span
-                                key={index}
+                                key={genre}
                                 className="item_genres_silver"
                                 style={{
                                     display: 'inline-block',
@@ -139,7 +139,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                             count={10}
                             allowHalf
                             defaultValue={rating}
-                            onChange={handleRateChange}
+                            onChange={(valueRait) => handleRateChange(valueRait)}
                             showSizeChanger="false"
                         />
                     )}
@@ -156,12 +156,7 @@ function ListItem({ item, genres, onRate, isRated }) {
             dataSource={item}
             renderItem={(listItem) => (
                 <List.Item>
-                    <ListComponent
-                        item={listItem}
-                        GenresContext={genres}
-                        onRate={onRate}
-                        isRated={isRated}
-                    />
+                    <ListComponent item={listItem} GenresContext={genres} onRate={onRate} isRated={isRated} />
                 </List.Item>
             )}
         />
