@@ -6,7 +6,6 @@ import { createRoot } from 'react-dom/client'
 import { Layout, Pagination, Spin, Empty, Tabs } from 'antd'
 import Headers from './components/Header/Header'
 import Content from './components/Content/Content'
-import Filter from './components/Header/Filter/Filter'
 
 const { Footer } = Layout
 const { TabPane } = Tabs
@@ -22,8 +21,8 @@ function App() {
     const [sessionId, setSessionId] = useState('')
     const [ratedMovies, setRatedMovies] = useState([])
     const [genres, setGenres] = useState([])
-    const [ratedTotalResults, setRatedTotalResults] = useState(0);
-    const [ratedCurrentPage, setRatedCurrentPage] = useState(1);
+    const [ratedTotalResults, setRatedTotalResults] = useState(0)
+    const [ratedCurrentPage, setRatedCurrentPage] = useState(1)
 
     const apiKey2 = '6815b8c9798e37baf41eceff7a08b590'
 
@@ -57,70 +56,76 @@ function App() {
     }
 
     const fetchRatedMovies = async (page = 1) => {
-        setIsLoading(true);
-        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`;
+        setIsLoading(true)
+        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
 
         try {
             const response = await fetch(url, {
                 method: 'GET',
                 headers: { accept: 'application/json' },
-            });
-            const data = await response.json();
+            })
+            const data = await response.json()
             if (data.results) {
-                setRatedMovies(data.results);
-                setRatedTotalResults(data.total_results);
+                setRatedMovies(data.results)
+                setRatedTotalResults(data.total_results)
             } else {
-                setRatedMovies([]);
-                setRatedTotalResults(0);
+                setRatedMovies([])
+                setRatedTotalResults(0)
             }
         } catch (error) {
-            console.error('Ошибка при получении рейтингов:', error);
+            console.error('Ошибка при получении рейтингов:', error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     const rateMovie = async (movieId, rating) => {
-        const url = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${apiKey2}&guest_session_id=${sessionId}`;
+        const url = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${apiKey2}&guest_session_id=${sessionId}`
         const optionsPost = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ value: rating }),
-        };
+        }
 
         try {
-            const response = await fetch(url, optionsPost);
-            const data = await response.json();
-            console.log('Рейтинг фильма обновлен:', data);
+            const response = await fetch(url, optionsPost)
+            const data = await response.json()
+            console.log('Рейтинг фильма обновлен:', data)
 
             // Обновляем movies
             setMovies((prevMovies) => {
                 const updatedMovies = prevMovies.map((movie) => {
                     if (movie.id === movieId) {
-                        return { ...movie, rating: rating !== undefined && rating !== null ? rating : movie.rating };
+                        return { ...movie, rating: rating !== undefined && rating !== null ? rating : movie.rating }
                     }
-                    return movie;
-                });
-                return updatedMovies;
-            });
+                    return movie
+                })
+                return updatedMovies
+            })
 
             // Локально обновляем ratedMovies с полными данными о фильме
             setRatedMovies((prevRatedMovies) => {
-                const movieToUpdate = movies.find((movie) => movie.id === movieId);
-                const updatedRatedMovies = [...prevRatedMovies];
-                const movieIndex = updatedRatedMovies.findIndex((movie) => movie.id === movieId);
+                const movieToUpdate = movies.find((movie) => movie.id === movieId)
+                const updatedRatedMovies = [...prevRatedMovies]
+                const movieIndex = updatedRatedMovies.findIndex((movie) => movie.id === movieId)
                 if (movieIndex !== -1) {
-                    updatedRatedMovies[movieIndex] = { ...movieToUpdate, rating: rating !== undefined && rating !== null ? rating : updatedRatedMovies[movieIndex].rating };
+                    updatedRatedMovies[movieIndex] = {
+                        ...movieToUpdate,
+                        rating:
+                            rating !== undefined && rating !== null ? rating : updatedRatedMovies[movieIndex].rating,
+                    }
                 } else {
-                    updatedRatedMovies.push({ ...movieToUpdate, rating: rating !== undefined && rating !== null ? rating : 0 });
+                    updatedRatedMovies.push({
+                        ...movieToUpdate,
+                        rating: rating !== undefined && rating !== null ? rating : 0,
+                    })
                 }
-                return updatedRatedMovies;
-            });
-
+                return updatedRatedMovies
+            })
         } catch (error) {
-            console.error('Ошибка при отправке рейтинга:', error);
+            console.error('Ошибка при отправке рейтинга:', error)
         }
-    };
+    }
 
     const fetchGenres = async () => {
         const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=6815b8c9798e37baf41eceff7a08b590&language=en-US`
@@ -158,14 +163,13 @@ function App() {
 
     useEffect(() => {
         if (sessionId) {
-            fetchRatedMovies(ratedCurrentPage);
+            fetchRatedMovies(ratedCurrentPage)
         }
-    }, [sessionId, ratedCurrentPage]);
+    }, [sessionId, ratedCurrentPage])
 
     const handleRatedPageChange = (page) => {
-        setRatedCurrentPage(page);
-    };
-
+        setRatedCurrentPage(page)
+    }
 
     const handleSearch = useCallback(
         debounce((query) => {
@@ -177,8 +181,6 @@ function App() {
     const handlePageChange = (page) => {
         setCurrentPage(page)
     }
-
-
 
     return (
         <GenresContext.Provider value={genres}>
@@ -233,7 +235,6 @@ function App() {
                                             onRate={rateMovie}
                                             isRated={true}
                                         />
-
                                         <Pagination
                                             current={ratedCurrentPage}
                                             pageSize={10}

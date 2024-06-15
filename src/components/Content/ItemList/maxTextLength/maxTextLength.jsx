@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 function maxTextLength(text, maxLength = 199) {
-    if ( !text ) {
+    if (!text) {
         return ''
     }
     if (text.length <= maxLength) {

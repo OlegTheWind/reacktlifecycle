@@ -47,8 +47,8 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
         : 'Жанры не известны'
 
     return (
-        <Card key={item.id} >
-            <div className='content_item_block'>
+        <Card key={item.id}>
+            <div className="content_item_block">
                 <div className="item_image_block">
                     {(() => {
                         if (hasError) {
@@ -78,20 +78,26 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                 <div className="item_list">
                     <div className="item_header">
                         <h1 className="item_title">{item.title}</h1>
-                        <div className="item_vote" style={{
-                            backgroundImage: `radial-gradient(circle at center, transparent 65%, ${getColor(item.vote_average)} 65%)`,
-                            backgroundSize: '100% 100%',
-                            backgroundRepeat: 'no-repeat',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}>
-                            <div className="item_vote_int" style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                color: 'black'
-                            }}>
+                        <div
+                            className="item_vote"
+                            style={{
+                                backgroundImage: `radial-gradient(circle at center, transparent 65%, ${getColor(item.vote_average)} 65%)`,
+                                backgroundSize: '100% 100%',
+                                backgroundRepeat: 'no-repeat',
+                                position: 'relative',
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <div
+                                className="item_vote_int"
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    color: 'black',
+                                }}
+                            >
                                 {item.vote_average !== undefined ? item.vote_average.toFixed(1) : ''}
                             </div>
                         </div>
@@ -112,22 +118,30 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                                     border: '1px solid #808080',
                                 }}
                             >
-                            {genre}
+                                {genre}
                             </span>
                         ))}
                     </div>
-                    <div className="item_overview"><p>{maxTextLength(item.overview)}</p></div>
+                    <div className="item_overview">
+                        <p>{maxTextLength(item.overview)}</p>
+                    </div>
                     {isRated ? (
                         <Rate
                             count={10}
                             allowHalf
                             defaultValue={item.rating}
                             onChange={(value) => onRate(item.id, value)}
-                            showSizeChanger='false'
+                            showSizeChanger="false"
                             fontSize={14}
                         />
                     ) : (
-                        <Rate count={10} allowHalf defaultValue={rating} onChange={handleRateChange} showSizeChanger='false' />
+                        <Rate
+                            count={10}
+                            allowHalf
+                            defaultValue={rating}
+                            onChange={handleRateChange}
+                            showSizeChanger="false"
+                        />
                     )}
                 </div>
             </div>
@@ -135,7 +149,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
     )
 }
 
-function ListItem({ item, genres, onRate, isRated, raites }) {
+function ListItem({ item, genres, onRate, isRated }) {
     return (
         <List
             grid={{ gutter: 24, xs: 1, md: 1, lg: 2, xl: 2, xxl: 2 }}
@@ -147,7 +161,6 @@ function ListItem({ item, genres, onRate, isRated, raites }) {
                         GenresContext={genres}
                         onRate={onRate}
                         isRated={isRated}
-                        onRaites={raites}
                     />
                 </List.Item>
             )}
@@ -173,6 +186,7 @@ ListComponent.propTypes = {
             name: PropTypes.string.isRequired,
         }),
     ),
+    isRated: PropTypes.bool.isRequired,
 }
 
 ListItem.propTypes = {
@@ -193,6 +207,7 @@ ListItem.propTypes = {
         }),
     ),
     onRate: PropTypes.func.isRequired,
+    isRated: PropTypes.bool.isRequired,
 }
 ListComponent.defaultProps = {
     GenresContext: [],

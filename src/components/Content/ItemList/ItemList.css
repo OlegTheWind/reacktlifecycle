@@ -21,16 +21,14 @@
     align-items: center;
 }
 
-.content_item_block{
+.content_item_block {
     display: flex;
 }
 .item_genres {
     display: flex;
     flex-wrap: wrap;
     gap: 2px;
-
 }
-
 
 .item_overview,
 font {
@@ -57,7 +55,6 @@ font {
 }
 
 @media (min-width: 320px) and (max-width: 720px) {
-
     .item_title {
         font-size: 14px;
     }
@@ -78,12 +75,11 @@ font {
         display: flex;
         align-items: center;
     }
-    .ant-rate-star{
+    .ant-rate-star {
         font-size: 15px;
         display: inline-flex;
-        margin-inline-end: 6px
+        margin-inline-end: 6px;
     }
-
 }
 @media (min-width: 320px) and (max-width: 400px) {
     .item_image_block,
@@ -93,26 +89,25 @@ font {
         max-height: 80px;
     }
 
-    .item_genres{
+    .item_genres {
         transform: translate(-50px, 10px);
     }
-    .item_overview{
+    .item_overview {
         transform: translate(-50px, 10px);
         width: 240px;
     }
-    .item_vote{
-        transform: translate(-25px, 0px);
+    .item_vote {
+        transform: translate(-33px, 0px);
     }
-    .item_title{
+    .item_title {
         width: 75%;
     }
-    .ant-rate{
+    .ant-rate {
         transform: translate(-30px, 5px);
     }
-    
 }
 
-@media (min-width: 400px) and (max-width: 720px ){
+@media (min-width: 400px) and (max-width: 720px) {
     .item_image_block,
     .item_image {
         display: flex;
@@ -121,7 +116,7 @@ font {
     }
 }
 @media (min-width: 720px) {
-    .ant-spin{
+    .ant-spin {
         display: flex;
         min-width: 200px;
         min-height: 300px;
