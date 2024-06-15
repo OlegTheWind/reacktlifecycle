@@ -106,7 +106,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                     <div className="item_genres">
                         {movieGenres.split(', ').map((genre) => (
                             <span
-                                key={genre}
+                                key={genre.trim()}
                                 className="item_genres_silver"
                                 style={{
                                     display: 'inline-block',
