@@ -6,7 +6,6 @@ import ListItem from './ItemList/ItemList'
 const { Content } = Layout
 
 function Contents({ data, GenresContext, isLoading, onPageChange, onRate }) {
-    console.log(data)
     return (
         <Content>
             <ListItem

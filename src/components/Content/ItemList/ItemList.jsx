@@ -52,7 +52,13 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                 <div className="item_image_block">
                     {(() => {
                         if (hasError) {
-                            return <div className="item_image_block">Ошибка загрузки изображения</div>
+                            return (
+                                <img
+                                    className="item_image_block_error"
+                                    src="https://i.ytimg.com/vi/SLDYvwfNTMc/0.jpg"
+                                    alt="Ошибка загрузки изображения"
+                                />
+                            )
                         }
                         if (isLoading) {
                             return (
@@ -78,26 +84,8 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                 <div className="item_list">
                     <div className="item_header">
                         <h1 className="item_title">{item.title}</h1>
-                        <div
-                            className="item_vote"
-                            style={{
-                                backgroundImage: `radial-gradient(circle at center, transparent 65%, ${getColor(item.vote_average)} 65%)`,
-                                backgroundSize: '100% 100%',
-                                backgroundRepeat: 'no-repeat',
-                                position: 'relative',
-                                overflow: 'hidden',
-                            }}
-                        >
-                            <div
-                                className="item_vote_int"
-                                style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    color: 'black',
-                                }}
-                            >
+                        <div className="item_vote" style={{ boxShadow: `0 0 0px 2px ${getColor(item.vote_average)}` }}>
+                            <div className="item_vote_int">
                                 {item.vote_average !== undefined ? item.vote_average.toFixed(1) : ''}
                             </div>
                         </div>
@@ -105,19 +93,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                     <div className="item_date">{formattedDate}</div>
                     <div className="item_genres">
                         {movieGenres.split(', ').map((genre) => (
-                            <span
-                                key={genre.trim()}
-                                className="item_genres_silver"
-                                style={{
-                                    display: 'inline-block',
-                                    marginRight: '2px',
-                                    padding: '2px 2px',
-                                    borderRadius: '2px',
-                                    backgroundColor: 'rgba(128, 128, 128, 0.1)',
-                                    height: 25,
-                                    border: '1px solid #808080',
-                                }}
-                            >
+                            <span key={genre.trim()} className="item_genres_silver">
                                 {genre}
                             </span>
                         ))}

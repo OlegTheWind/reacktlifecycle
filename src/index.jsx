@@ -15,6 +15,7 @@ const GenresContext = createContext([])
 function App() {
     const [movies, setMovies] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [isLoadingRated, setIsLoadingRated] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
     const [searchQuery, setSearchQuery] = useState('')
@@ -50,7 +51,6 @@ function App() {
             const response = await fetch(url, options)
             const data = await response.json()
             setMovies(data.results)
-            console.log('Movies data:', data)
             setTotalResults(data.total_results)
         } catch (error) {
             console.error(error)
@@ -60,7 +60,7 @@ function App() {
     }
 
     const fetchRatedMovies = async (page = 1) => {
-        setIsLoading(true)
+        setIsLoadingRated(true)
         const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
 
         try {
@@ -71,7 +71,7 @@ function App() {
             const data = await response.json()
             if (data.results) {
                 setRatedMovies(data.results)
-                setRatedTotalResults(data.total_results)
+                setRatedTotalResults(data.total_results || 0)
             } else {
                 setRatedMovies([])
                 setRatedTotalResults(0)
@@ -79,7 +79,7 @@ function App() {
         } catch (error) {
             console.error('Ошибка при получении рейтингов:', error)
         } finally {
-            setIsLoading(false)
+            setIsLoadingRated(false)
         }
     }
 
@@ -149,7 +149,6 @@ function App() {
         try {
             const response = await fetch(url, { method: 'GET' })
             const data = await response.json()
-            console.log('Guest session created:', data)
             setSessionId(data.guest_session_id)
         } catch (error) {
             console.error(error)
@@ -212,7 +211,6 @@ function App() {
                                             current={currentPage}
                                             total={totalResults}
                                             onChange={handlePageChange}
-                                            style={{ marginTop: '20px' }}
                                             showSizeChanger={false}
                                         />
                                     </>
@@ -226,7 +224,7 @@ function App() {
                     </TabPane>
                     <TabPane tab="Rated" key="2">
                         {(() => {
-                            if (isLoading) {
+                            if (isLoadingRated) {
                                 return <Spin size="large" />
                             }
                             if (ratedMovies.length) {
@@ -235,13 +233,14 @@ function App() {
                                         <Content
                                             data={ratedMovies}
                                             GenresContext={GenresContext}
-                                            isLoading={isLoading}
+                                            isLoadingRated={isLoadingRated}
+                                            onPageChange={handleRatedPageChange}
                                             onRate={rateMovie}
                                             isRated
                                         />
                                         <Pagination
+                                            defaultPageSize={20}
                                             current={ratedCurrentPage}
-                                            pageSize={10}
                                             total={ratedTotalResults}
                                             onChange={handleRatedPageChange}
                                             style={{ marginTop: '20px' }}
@@ -249,7 +248,7 @@ function App() {
                                     </>
                                 )
                             }
-                            if (!isLoading) {
+                            if (!isLoadingRated) {
                                 return <Empty description="Нет оцененных фильмов" />
                             }
                             return null
