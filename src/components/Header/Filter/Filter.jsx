@@ -7,7 +7,7 @@ const { Search } = Input
 
 function Filter({ onSearch }) {
     return (
-        <div className="search_top" >
+        <div className="search_top">
             <Search placeholder="Введите название фильма" onChange={(e) => onSearch(e.target.value)} enterButton />
         </div>
     )
