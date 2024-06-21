@@ -19,19 +19,18 @@ function App() {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalResults, setTotalResults] = useState(0)
     const [searchQuery, setSearchQuery] = useState('')
-    const [sessionId, setSessionId] = useState('')
+    const [sessionId, setSessionId] = useState()
     const [ratedMovies, setRatedMovies] = useState([])
     const [genres, setGenres] = useState([])
     const [ratedTotalResults, setRatedTotalResults] = useState(0)
     const [ratedCurrentPage, setRatedCurrentPage] = useState(1)
 
-    const apiKey2 = '6815b8c9798e37baf41eceff7a08b590'
+    const API_KEY = '383829f6422882f7b7e26e456e3cefb7'
 
     const options = {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: `Bearer ${apiKey2}`,
         },
     }
 
@@ -40,11 +39,11 @@ function App() {
         let url
 
         if (isRated) {
-            url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
+            url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}&language=en-US&sort_by=created_at.asc&page=${page}`
         } else if (query) {
-            url = `https://api.themoviedb.org/3/search/movie?query=${query}?&include_adult=false&language=en-US&page=${page}&api_key=6815b8c9798e37baf41eceff7a08b590`
+            url = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=${page}&api_key=${API_KEY}`
         } else {
-            url = `https://api.themoviedb.org/3/discover/movie?api_key=6815b8c9798e37baf41eceff7a08b590&page=${page}`
+            url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=${page}`
         }
 
         try {
@@ -60,104 +59,97 @@ function App() {
     }
 
     const fetchRatedMovies = async (page = 1) => {
-        setIsLoadingRated(true)
-        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${apiKey2}&language=en-US&sort_by=created_at.asc&page=${page}`
+        setIsLoadingRated(true);
+        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}`;
 
         try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { accept: 'application/json' },
-            })
-            const data = await response.json()
+            const response = await fetch(url, options);
+            const data = await response.json();
+            console.log('Ответ от сервера для оцененных фильмов:', data.results);
             if (data.results) {
-                setRatedMovies(data.results)
-                setRatedTotalResults(data.total_results || 0)
+                const moviesWithGenres = data.results.map((movie) => {
+                    const movieGenres = movie.genre_ids.map(
+                        (genreId) => genres.find((genre) => genre.id === genreId)?.name || 'Жанр не найден',
+                    );
+                    return { ...movie, genres: movieGenres };
+                });
+
+                setRatedMovies(moviesWithGenres);
+                setRatedTotalResults(data.total_results || 0);
             } else {
-                setRatedMovies([])
-                setRatedTotalResults(0)
+                setRatedMovies([]);
+                setRatedTotalResults(0);
+                console.error('API не возвращает total_results для оцененных фильмов');
             }
         } catch (error) {
-            console.error('Ошибка при получении рейтингов:', error)
+            console.error('Ошибка при получении рейтингов:', error);
         } finally {
-            setIsLoadingRated(false)
+            setIsLoadingRated(false);
         }
-    }
+    };
 
     const rateMovie = async (movieId, rating) => {
-        const url = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${apiKey2}&guest_session_id=${sessionId}`
+        if (!sessionId) {
+            console.error('Session ID отсутствует. Невозможно оценить фильм.');
+            return;
+        }
+
+        const rateUrl = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${API_KEY}&guest_session_id=${sessionId}`;
         const optionsPost = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ value: rating }),
-        }
+        };
 
         try {
-            const response = await fetch(url, optionsPost)
-            const data = await response.json()
-            console.log('Рейтинг фильма обновлен:', data)
+            const rateResponse = await fetch(rateUrl, optionsPost);
+            const rateData = await rateResponse.json();
+            console.log('Ответ сервера на запрос оценки:', rateData);
+            console.log('Session ID:', sessionId);
 
-            // Обновляем movies
-            setMovies((prevMovies) => {
-                const updatedMovies = prevMovies.map((movie) => {
-                    if (movie.id === movieId) {
-                        return { ...movie, rating: rating !== undefined && rating !== null ? rating : movie.rating }
-                    }
-                    return movie
-                })
-                return updatedMovies
-            })
-
-            // Локально обновляем ratedMovies с полными данными о фильме
-            setRatedMovies((prevRatedMovies) => {
-                const movieToUpdate = movies.find((movie) => movie.id === movieId)
-                const updatedRatedMovies = [...prevRatedMovies]
-                const movieIndex = updatedRatedMovies.findIndex((movie) => movie.id === movieId)
-                if (movieIndex !== -1) {
-                    updatedRatedMovies[movieIndex] = {
-                        ...movieToUpdate,
-                        rating:
-                            rating !== undefined && rating !== null ? rating : updatedRatedMovies[movieIndex].rating,
-                    }
-                } else {
-                    updatedRatedMovies.push({
-                        ...movieToUpdate,
-                        rating: rating !== undefined && rating !== null ? rating : 0,
-                    })
-                }
-                return updatedRatedMovies
-            })
+            if (rateData.success) {
+                await fetchRatedMovies(ratedCurrentPage);
+            } else {
+                console.error('Ошибка при оценке фильма:', rateData.status_message);
+            }
         } catch (error) {
-            console.error('Ошибка при отправке рейтинга:', error)
+            console.error('Ошибка при отправке рейтинга:', error);
         }
-    }
+    };
+
 
     const fetchGenres = async () => {
-        const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=6815b8c9798e37baf41eceff7a08b590&language=en-US`
+        const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
 
         try {
             const response = await fetch(url, options)
             const data = await response.json()
             setGenres(data.genres)
+            console.log(genres)
         } catch (error) {
             console.error(error)
         }
     }
 
     const createGuestSession = async () => {
-        const url = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${apiKey2}`
-
+        const url = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${API_KEY}`;
         try {
-            const response = await fetch(url, { method: 'GET' })
-            const data = await response.json()
-            setSessionId(data.guest_session_id)
+            const response = await fetch(url, { method: 'GET' });
+            const data = await response.json();
+            if (data.success) {
+                return setSessionId(data.guest_session_id);
+            } else {
+                console.error('Ошибка при создании гостевой сессии:', data.status_message);
+            }
         } catch (error) {
-            console.error(error)
+            console.error('Ошибка сети при создании гостевой сессии:', error);
         }
-    }
+    };
 
     useEffect(() => {
+        console.log('Текущая страница:', currentPage)
         fetchMovies(currentPage, searchQuery)
-    }, [currentPage, searchQuery])
+    }, [currentPage, searchQuery, API_KEY, sessionId])
 
     useEffect(() => {
         createGuestSession()
@@ -171,6 +163,7 @@ function App() {
     }, [sessionId, ratedCurrentPage])
 
     const handleRatedPageChange = (page) => {
+        console.log('Смена страницы рейтингов на:', page)
         setRatedCurrentPage(page)
     }
 
@@ -239,11 +232,10 @@ function App() {
                                             isRated
                                         />
                                         <Pagination
-                                            defaultPageSize={20}
                                             current={ratedCurrentPage}
                                             total={ratedTotalResults}
                                             onChange={handleRatedPageChange}
-                                            style={{ marginTop: '20px' }}
+                                            showSizeChanger={false}
                                         />
                                     </>
                                 )

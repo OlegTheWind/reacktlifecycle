@@ -47,7 +47,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
         : 'Жанры не известны'
 
     return (
-        <Card key={item.id}>
+        <Card key={item.id} className="card_content">
             <div className="content_item_block">
                 <div className="item_image_block">
                     {(() => {
@@ -80,24 +80,27 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                         }
                         return null
                     })()}
-                </div>
-                <div className="item_list">
                     <div className="item_header">
-                        <h1 className="item_title">{item.title}</h1>
+                        <div className="block_title_header">
+                            <h1 className="item_title">{item.title}</h1>
+                            <div className="item_date">{formattedDate}</div>
+                            <div className="item_genres">
+                                {movieGenres.split(', ').map((genre) => (
+                                    <span key={genre.trim()} className="item_genres_silver">
+                                        {genre}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
                         <div className="item_vote" style={{ boxShadow: `0 0 0px 2px ${getColor(item.vote_average)}` }}>
                             <div className="item_vote_int">
                                 {item.vote_average !== undefined ? item.vote_average.toFixed(1) : ''}
                             </div>
                         </div>
                     </div>
-                    <div className="item_date">{formattedDate}</div>
-                    <div className="item_genres">
-                        {movieGenres.split(', ').map((genre) => (
-                            <span key={genre.trim()} className="item_genres_silver">
-                                {genre}
-                            </span>
-                        ))}
-                    </div>
+                </div>
+                <div className="item_list">
                     <div className="item_overview">
                         <p>{maxTextLength(item.overview)}</p>
                     </div>
