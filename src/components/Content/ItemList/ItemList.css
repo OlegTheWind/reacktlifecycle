@@ -18,9 +18,13 @@ body {
     max-height: 90px;
     line-height: normal;
 }
+.ant-spin {
+    min-width: 100px;
+}
 .item_header {
     display: flex;
     min-width: 80%;
+    justify-content: space-around;
 }
 .item_vote_int {
     display: flex;
@@ -44,7 +48,7 @@ body {
 
 .item_overview,
 font {
-    height: 110px;
+    /*height: 110px;*/
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
@@ -55,15 +59,16 @@ font {
     display: flex;
     height: 30px;
     width: 100%;
+    margin-left: 5px;
 }
 
-:where(.css-dev-only-do-not-override-3rel02).ant-rate .ant-rate-star:not(:last-child) {
-    margin-inline-end: 0;
+.ant-rate .ant-rate-star:not(:last-child) {
+    margin-inline-end: 5px;
 }
 .item_image_block_error {
     display: flex;
-    min-width: 200px;
-    min-height: 300px;
+    /*min-width: 200px;*/
+    /*min-height: 300px;*/
 }
 
 .item_vote {
@@ -73,9 +78,10 @@ font {
     border-radius: 50px;
     max-width: 20%;
 }
-.ant-col .css-dev-only-do-not-override-3rel02 {
+.rate_position {
     padding-left: 0;
     padding-right: 0;
+    margin-left: auto;
 }
 .item_genres_silver {
     display: inline-block;
@@ -95,6 +101,13 @@ font {
     justify-content: center;
     color: black;
     font-size: 16px;
+}
+
+.ant-row {
+    display: flex;
+    flex-flow: row wrap;
+    min-width: 0;
+    justify-content: space-around;
 }
 
 /*@media (max-width: 320px) {*/
@@ -136,14 +149,18 @@ font {
 /*        margin-left: 40px;*/
 /*    }*/
 /*}*/
-
 @media (max-width: 400px) {
     .item_vote {
+    }
+}
+@media (max-width: 450px) {
+    .item_vote {
         display: flex;
-        max-width: 20px;
-        max-height: 20px;
+        max-width: 30px;
+        max-height: 30px;
         border-radius: 50px;
         margin-left: auto;
+        margin-right: 30px;
     }
 }
 @media (min-width: 450px) {
@@ -151,6 +168,7 @@ font {
         display: flex;
         flex-wrap: wrap;
         width: 300px;
+        margin-left: 5px;
     }
 }
 @media (max-width: 720px) {
@@ -172,8 +190,8 @@ font {
 
     .item_image_block_error {
         display: flex;
-        min-width: 80px;
-        min-height: 80px;
+        max-width: 90px;
+        min-height: 130px;
     }
 
     .item_title {
@@ -193,17 +211,14 @@ font {
         min-height: 30px;
         border-radius: 50px;
         margin-left: auto;
-        margin-right: 30px;
-        @media (min-width: 400px) {
-            margin-right: 0;
-        }
+        /*margin-right: 30px;*/
     }
     .item_vote_int {
         display: flex;
         align-items: center;
     }
     .ant-rate-star {
-        font-size: 15px;
+        font-size: 18px;
         display: inline-flex;
         margin-inline-end: 6px;
     }
@@ -212,11 +227,19 @@ font {
 }
 
 @media (min-width: 720px) {
-    .item_image_block_error {
-        display: flex;
-        min-width: 240px;
-        min-height: 200px;
+    .rate_position {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-top: 20px;
+        min-width: 100px;
     }
+
+    /*.item_image_block_error {*/
+    /*    display: flex;*/
+    /*    min-width: 240px;*/
+    /*    min-height: 200px;    margin-top: 20px;*/
+    /*}*/
     .item_image_block,
     .item_image {
         display: flex;
@@ -229,7 +252,7 @@ font {
         min-width: 40px;
         min-height: 40px;
         border-radius: 50px;
-        transform: translate(-50px, 10px);
+        transform: translate(-70px, 0px);
     }
 
     .item_list {
@@ -241,6 +264,11 @@ font {
         top: -146px;
         left: 165px;
     }
+    .item_image_block_error {
+        display: flex;
+        width: 165px;
+        height: 240px;
+    }
 }
 @media (min-width: 730px) {
     .card_content {
@@ -248,8 +276,19 @@ font {
     }
 }
 @media (min-width: 1000px) {
-    :where(.css-3rel02).ant-rate {
+    .ant-rate {
         font-size: 18px;
+        margin-left: auto;
+    }
+    .item_title {
+        font-size: 16px;
+        display: flex;
+        width: 60%;
+        max-height: 90px;
+        line-height: normal;
+        margin-left: 5px;
+    }
+    .ant-card-body {
     }
     @media (max-width: 1000px) {
         .item_header {

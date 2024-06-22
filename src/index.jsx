@@ -31,6 +31,8 @@ function App() {
         method: 'GET',
         headers: {
             accept: 'application/json',
+            authorization:
+                'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODM4MjlmNjQyMjg4MmY3YjdlMjZlNDU2ZTNjZWZiNyIsInN1YiI6IjY2NjQ0YTY4MWE4OTcwY2ViZGQwMzlhNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KMN1YPqJ8lQtQCv9CTwgyLLYYYU-3XDBpNOm1Dh59M8',
         },
     }
 
@@ -58,65 +60,68 @@ function App() {
         }
     }
 
-    const fetchRatedMovies = async (page = 1) => {
-        setIsLoadingRated(true);
-        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}`;
+    const fetchRatedMovies = async () => {
+        setIsLoadingRated(true)
+        const url = `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}`
 
         try {
-            const response = await fetch(url, options);
-            const data = await response.json();
-            console.log('Ответ от сервера для оцененных фильмов:', data.results);
+            const response = await fetch(url, options)
+            const data = await response.json()
+            console.log('Ответ от сервера для оцененных фильмов:', data.results)
             if (data.results) {
                 const moviesWithGenres = data.results.map((movie) => {
                     const movieGenres = movie.genre_ids.map(
                         (genreId) => genres.find((genre) => genre.id === genreId)?.name || 'Жанр не найден',
-                    );
-                    return { ...movie, genres: movieGenres };
-                });
+                    )
+                    return { ...movie, genres: movieGenres }
+                })
 
-                setRatedMovies(moviesWithGenres);
-                setRatedTotalResults(data.total_results || 0);
+                setRatedMovies(moviesWithGenres)
+                setRatedTotalResults(data.total_results || 0)
             } else {
-                setRatedMovies([]);
-                setRatedTotalResults(0);
-                console.error('API не возвращает total_results для оцененных фильмов');
+                setRatedMovies([])
+                setRatedTotalResults(0)
+                console.error('API не возвращает total_results для оцененных фильмов')
             }
         } catch (error) {
-            console.error('Ошибка при получении рейтингов:', error);
+            console.error('Ошибка при получении рейтингов:', error)
         } finally {
-            setIsLoadingRated(false);
+            setIsLoadingRated(false)
         }
-    };
+    }
 
     const rateMovie = async (movieId, rating) => {
         if (!sessionId) {
-            console.error('Session ID отсутствует. Невозможно оценить фильм.');
-            return;
+            console.error('Session ID отсутствует. Невозможно оценить фильм.')
+            return
         }
 
-        const rateUrl = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${API_KEY}&guest_session_id=${sessionId}`;
+        const rateUrl = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${API_KEY}&guest_session_id=${sessionId}`
         const optionsPost = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                authorization:
+                    'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzODM4MjlmNjQyMjg4MmY3YjdlMjZlNDU2ZTNjZWZiNyIsInN1YiI6IjY2NjQ0YTY4MWE4OTcwY2ViZGQwMzlhNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KMN1YPqJ8lQtQCv9CTwgyLLYYYU-3XDBpNOm1Dh59M8',
+            },
             body: JSON.stringify({ value: rating }),
-        };
+        }
 
         try {
-            const rateResponse = await fetch(rateUrl, optionsPost);
-            const rateData = await rateResponse.json();
-            console.log('Ответ сервера на запрос оценки:', rateData);
-            console.log('Session ID:', sessionId);
+            const rateResponse = await fetch(rateUrl, optionsPost)
+            const rateData = await rateResponse.json()
+            console.log('Ответ сервера на запрос оценки:', rateData)
+            console.log('Session ID:', sessionId)
 
             if (rateData.success) {
-                await fetchRatedMovies(ratedCurrentPage);
+                // await fetchRatedMovies(ratedCurrentPage);
             } else {
-                console.error('Ошибка при оценке фильма:', rateData.status_message);
+                console.error('Ошибка при оценке фильма:', rateData.status_message)
             }
         } catch (error) {
-            console.error('Ошибка при отправке рейтинга:', error);
+            console.error('Ошибка при отправке рейтинга:', error)
         }
-    };
-
+    }
 
     const fetchGenres = async () => {
         const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
@@ -132,19 +137,19 @@ function App() {
     }
 
     const createGuestSession = async () => {
-        const url = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${API_KEY}`;
+        const url = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${API_KEY}`
         try {
-            const response = await fetch(url, { method: 'GET' });
-            const data = await response.json();
+            const response = await fetch(url, { method: 'GET' })
+            const data = await response.json()
             if (data.success) {
-                return setSessionId(data.guest_session_id);
+                setSessionId(data.guest_session_id)
             } else {
-                console.error('Ошибка при создании гостевой сессии:', data.status_message);
+                console.error('Ошибка при создании гостевой сессии:', data.status_message)
             }
         } catch (error) {
-            console.error('Ошибка сети при создании гостевой сессии:', error);
+            console.error('Ошибка сети при создании гостевой сессии:', error)
         }
-    };
+    }
 
     useEffect(() => {
         console.log('Текущая страница:', currentPage)
@@ -182,7 +187,13 @@ function App() {
         <GenresContext.Provider value={genres}>
             <Layout>
                 <Headers onSearch={handleSearch} />
-                <Tabs defaultActiveKey="1" style={{ padding: '20px' }}>
+                <Tabs
+                    defaultActiveKey="1"
+                    style={{ padding: '20px' }}
+                    onChange={(key) => {
+                        if (key === '2') fetchRatedMovies(1)
+                    }}
+                >
                     <TabPane tab="Search" key="1">
                         {(() => {
                             if (isLoading) {

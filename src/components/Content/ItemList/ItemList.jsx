@@ -106,6 +106,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                     </div>
                     {isRated ? (
                         <Rate
+                            rootClassName="rate_position"
                             count={10}
                             allowHalf
                             defaultValue={item.rating}
@@ -115,6 +116,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
                         />
                     ) : (
                         <Rate
+                            rootClassName="rate_position"
                             count={10}
                             allowHalf
                             defaultValue={rating}
@@ -131,7 +133,7 @@ function ListComponent({ item, GenresContext, onRate, isRated }) {
 function ListItem({ item, genres, onRate, isRated }) {
     return (
         <List
-            grid={{ gutter: 24, xs: 1, md: 1, lg: 2, xl: 2, xxl: 2 }}
+            grid={{ xs: 1, lg: 2, xl: 2 }}
             dataSource={item}
             renderItem={(listItem) => (
                 <List.Item>
